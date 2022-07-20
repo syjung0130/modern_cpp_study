@@ -123,5 +123,54 @@ func(rx);               // rx는 왼값, 따라서
   일단 지금은, 보편 참조 매개변수에 대한 형식 연역 규칙들이 왼값 참조나 오른값 참조 매개변수들에 대한 규칙들과는 다르다는 점만 기억하자.  
   보편 참조가 관여하는 경우에는 왼값인수와 오른값인수에 대해 다른 연역 규칙들이 적용된다.  
   
-### 경우3: 0
+### 경우3: ParamType이 포인터도 아니고 참조도 아님
+ParamType이 포인터도 아니고, 참조도 아니다 -> 인수가 함수에 값으로 전달되는 상황(pass-by-value)  
+~~~C++
+template<typename T>
+void f(T param);        // 이번에는 param이 값으로 전달된다.
+~~~
+param은 주어진 인수의 복사본, 즉 완전히 새로운 객체이다.  
+덕분에, expr에서 T로 연역되는 과정에서 다음과 같은 규칙들이 적용된다.
+~~~
+1. 이전처럼, 만일 expr의 형식이 참조이면, 참조 부분은 무시된다.  
+2. expr의 참조성을 무시한 후, 만일 expr이 const이면 그 const 역시 무시한다.  
+만일 volatile이면 그것도 무시한다.
+~~~
+  
+이 규칙들이 적용되는 예를 보자.  
+~~~C++
+int x = 27;         // 이전과 동일
+const int cx = x;   // 이전과 동일
+const int& rx = x;  // 이전과 동일
+
+f(x);               // T와 param의 형식은 둘 다 int
+
+f(cx);              // 여전히 T와 param의 형식은 둘 다 int
+
+f(rx);              // 이번에도 T와 param의 형식은 둘 다 int
+~~~
+  
+cx와 rx가 const값을 지칭하지만, 그래도 param은 const가 아님을 주목하자.  
+param은 cx나 rx의 복사본이므로, 다시 말해 param은 cx나 rx와는 완전히 독립적인 객체이므로 당연한 결과이다.  
+--> cx와 rx가 수정될 수 없다는 점은 param의 수정 가능 여부와는 전혀 무관하다.  
+(== expr을 수정할 수 없다고 해서, 그 복사본까지 수정할 수 없는 것은 아니다.)  
+  
+앞에서 보았듯이, expr이 const에 대한 참조나 포인터인 경우에는, 형식 연역 과정에서 expr의 const성이 보존된다.  
+그러나 expr이 const 객체를 가리키는 const 포인터이고 param에 값으로 전달되는 경우는 어떨까?  
+~~~C++
+template<typename T>
+void func(T param);             // 인수는 param에 여전히 값으로 전달된다.
+
+const char* const ptr =         // ptr는 const 객체를 가리키는 const 포인터
+        "Fun with pointers";
+
+func(ptr);                      // const char *const 형식의 인수를 전달
+~~~
+
+ptr 선언의 별표(*) 오른쪽에 있는 const 때문에 ptr 자체는 const가 된다.  
+ ==> 즉, ptr를 다른 장소를 가리키도록 변경할 수 없으며, ptr에 NULL을 배정할 수도 없다.  
+ (별표 왼쪽의 const는 ptr가 가리키는 것, 즉 문자열이 const임을 뜻한다.--> 그 문자열은 변경할 수 없다.)  
+ptr를 f에 전달하면 그 포인터를 구성하는 비트들이 param에 복사된다. 즉, 포인터 자체(ptr)는 값으로 전달된다.  
+형식 연역 과정에서 ptr의 const성은 무시된다. 값 전달 방식의 매개변수에 관한 형식 연역 규칙처럼 동작한다.  
+결국, param에 대해 연역되는 형식은 const char*이다.(param은 const문자열을 가리키는 수정가능한 포인터)  
   
