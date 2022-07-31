@@ -221,3 +221,31 @@ int mappedVals[arraySize(keyVals)];         //mappedVals의 원소 개수 역시
 ~~~
 arraySize를 noexcept로 선언한 것은 컴파일러가 더 나은 코드를 산출하는데 도움을 주려는 것이다.  
 noexcept에 대한 자세한 내용은 항목14를 참고.  
+
+#### 함수 인수
+C++에서 포인터로 붕괴하는 것은 배열만은 아니다.  
+함수 형식도 함수 포인터로 붕괴할 수 있으며, 지금까지 배열에 대한 형식 연역과 관련해서 논의한 모든 것은  
+함수에 대한 형식 영역에, 그리고 함수 포인터로의 붕괴에 적용된다.  
+다음은 이 점을 보여주는 예이다.  
+~~~C++
+void someFunc(int, double);   //someFunc는 하나의 함수
+                              //형식은 void(int, double)
+
+template<typename T>
+void func1(T param);          //func1의 param은 값 전달 방식
+
+template<typename T>
+void func2(T param);          //func2의 param은 참조 전달 방식  
+
+func1(someFunc);              //param은 함수 포인터로 연역됨
+                              //형식은 void (*)(int, double)
+
+func2(someFunc);              //param은 함수 참조로 연역됨
+                              //형식은 void (&)(int, double)
+~~~
+실제 응용에서 이 점 때문에 뭔가 달라지는 경우는 드물지만,  
+배열에서 포인터로의 붕괴를 알고 있다면 함수에서 포인터로의ㅣ 붕괴도 알아두는 것이 좋다.  
+
+
+종종 컴파일러에게 "어떤 형식을 연역했는지 알려줘!"라고 외치고 싶을 때도 있는데,  
+그런 경우에는 항목4를 참고하면된다.  
