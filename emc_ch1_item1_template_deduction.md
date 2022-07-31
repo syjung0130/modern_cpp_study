@@ -166,11 +166,12 @@ const char* const ptr =         // ptr는 const 객체를 가리키는 const 포
 
 func(ptr);                      // const char *const 형식의 인수를 전달
 ~~~
-
+~~~
 ptr 선언의 별표(*) 오른쪽에 있는 const 때문에 ptr 자체는 const가 된다.  
  ==> 즉, ptr를 다른 장소를 가리키도록 변경할 수 없으며, ptr에 NULL을 배정할 수도 없다.  
  (별표 왼쪽의 const는 ptr가 가리키는 것, 즉 문자열이 const임을 뜻한다.--> 그 문자열은 변경할 수 없다.)  
 ptr를 f에 전달하면 그 포인터를 구성하는 비트들이 param에 복사된다. 즉, 포인터 자체(ptr)는 값으로 전달된다.  
 형식 연역 과정에서 ptr의 const성은 무시된다. 값 전달 방식의 매개변수에 관한 형식 연역 규칙처럼 동작한다.  
 결국, param에 대해 연역되는 형식은 const char*이다.(param은 const문자열을 가리키는 수정가능한 포인터)  
+~~~
   
