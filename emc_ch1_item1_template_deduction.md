@@ -219,9 +219,5 @@ constexpr std::size_t arraySize(T (&)[N]) noexcept
 int keyVals[] = {1, 3, 7, 9, 11, 22, 35};   //keyVals의 원소 개수는 7
 int mappedVals[arraySize(keyVals)];         //mappedVals의 원소 개수 역시 7
 ~~~
-물론 현대적인 C++ 개발자라면 당연히 다음 코드 처럼 내장 배열보다 std::array를 선호할 것이다.
-~~~C++
-std::array<int, arraySize(keyVals)> mappedVals; //mappedVals의 크기는 7
-~~~
 arraySize를 noexcept로 선언한 것은 컴파일러가 더 나은 코드를 산출하는데 도움을 주려는 것이다.  
 noexcept에 대한 자세한 내용은 항목14를 참고.  
