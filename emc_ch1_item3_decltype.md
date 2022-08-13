@@ -37,10 +37,6 @@ C++11에서 decltype은 함수의 반환 형식이 그 매개변수 형식들에
 std::deque, std::vector처럼, operator[]의 반환 형식이 컨테이너에 따라 다를 수 있다.  
 이런 함수를 구현할 경우 아래처럼 decltype을 이용해서 반환형식을 손쉽게 표현할 수 있다.  
 (decltype을 쓰지 않으면 int, bool, double 등의 타입별로 다 오버로딩해야하므로..)  
-
-그러나 vector<bool>에 대한 operator[]는 bool&가 아니라 완전히 새로운 객체를 돌려주는데,  
-왜 그런지에 대해서는 항목6에서 다시 보도록 하자.  
-여기서는 컨테이너의 operator[]의 반환 형식이 컨테이너에 따라 다를 수 있다는 점에 초점을 맞춰보자. 
 ~~~C++
 template<typename Container, typename Index>  // 작동하지만, 
 auto authAndAccess(Container& c, Index i)     // 좀 더 정련할 
